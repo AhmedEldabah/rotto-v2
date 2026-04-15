@@ -2,7 +2,7 @@
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rotto Cafe | Momenti Italiani</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -30,7 +30,8 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root { --gold: #D4AF37; --espresso: #120d0c; --roast: #1c1412; --warm: #F9F8F6; }
-        body { background: var(--espresso); color: var(--warm); font-family: 'Inter', sans-serif; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        html, body { max-width: 100%; overflow-x: hidden; }
+        body { background: var(--espresso); color: var(--warm); font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         /* ── PRELOADER ── */
         #preloader { position: fixed; inset: 0; z-index: 9999; background: var(--espresso); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.2s; backdrop-filter: blur(10px); }
@@ -82,12 +83,16 @@
         .title-line { display: none; } /* Removed old title line in favor of eyebrow lines */
 
         /* ── TABBED MENU SYSTEM ── */
-        .menu-tabs { display: flex; overflow-x: auto; gap: 12px; padding: 6px; background: rgba(255,255,255,0.02); border-radius: 100px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 40px; scrollbar-width: none; width: max-content; max-width: 100%; margin-left: auto; margin-right: auto; }
+        .menu-tabs { display: flex; overflow-x: auto; gap: 10px; padding: 6px 10px; background: rgba(255,255,255,0.02); border-radius: 100px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 40px; scrollbar-width: none; width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; justify-content: flex-start; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; }
         .menu-tabs::-webkit-scrollbar { display: none; }
-        .tab-btn { white-space: nowrap; padding: 12px 24px; border-radius: 50px; font-size: 13px; font-weight: 600; color: rgba(249,248,246,0.5); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden; border: 1px solid transparent; }
+        .tab-btn { white-space: nowrap; padding: 10px 16px; border-radius: 50px; font-size: 12px; font-weight: 600; color: rgba(249,248,246,0.5); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden; border: 1px solid transparent; flex: 0 0 auto; scroll-snap-align: center; }
         .tab-btn.active { background: var(--gold); color: var(--espresso); box-shadow: 0 4px 15px rgba(212,175,55,0.2); }
         .tab-pane { display: none; animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .tab-pane.active { display: block; }
+        @media(min-width: 768px) {
+            .menu-tabs { width: max-content; justify-content: center; gap: 12px; padding: 6px; }
+            .tab-btn { padding: 12px 24px; font-size: 13px; }
+        }
 
         /* ── INTERACTIVE MENU ROWS ── */
         .menu-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 14px; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; transition: all 0.3s ease; border-radius: 12px; position: relative; z-index: 1; }
@@ -104,6 +109,11 @@
         .menu-action { display: flex; align-items: center; gap: 16px; }
         .menu-price { color: var(--gold); font-size: 14px; font-weight: 600; white-space: nowrap; font-family: 'Playfair Display', serif; letter-spacing: 1px; }
         .add-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); background: rgba(255,255,255,0.02); }
+        .menu-row > div:first-child { min-width: 0; }
+        .menu-name, .menu-desc { overflow-wrap: break-word; }
+        .menu-option-toggle { display: flex; flex-wrap: wrap; }
+        .menu-group-title { display: flex; font-size: clamp(1.2rem, 5vw, 1.5rem); line-height: 1.3; flex-wrap: wrap; }
+        .menu-group-title i { flex-shrink: 0; }
 
         /* ── BUNDLE CARDS ── */
         .bundle-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 30px 24px; border-radius: 16px; position: relative; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); overflow: hidden; backdrop-filter: blur(10px); }
@@ -377,11 +387,11 @@
         <div id="tab-hot" class="tab-pane active">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
                 <div>
-                    <h3 class="text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-mug-hot text-lg opacity-80"></i> Classics</h3>
+                    <h3 class="menu-group-title text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-mug-hot text-lg opacity-80"></i> Classics</h3>
                     <div class="menu-row" style="cursor:default;" onclick="event.stopPropagation()">
                         <div>
                             <div class="menu-name">Turkish Coffee</div>
-                            <div class="flex gap-2 mt-3" id="turkish-toggle">
+                            <div class="menu-option-toggle flex gap-2 mt-3" id="turkish-toggle">
                                 <button onclick="addTurkishCoffee('Single', 60)" class="text-[11px] font-semibold px-4 py-1.5 rounded-full border border-gold/40 text-gold hover:bg-gold hover:text-espresso transition-all shadow-[0_2px_10px_rgba(212,175,55,0.1)]">Single — 60</button>
                                 <button onclick="addTurkishCoffee('Double', 75)" class="text-[11px] font-semibold px-4 py-1.5 rounded-full border border-gold/40 text-gold hover:bg-gold hover:text-espresso transition-all shadow-[0_2px_10px_rgba(212,175,55,0.1)]">Double — 75</button>
                             </div>
@@ -398,7 +408,7 @@
                     <div class="menu-row" onclick="addToOrder('Black / Green Tea', '60')"><div class="menu-name">Black / Green Tea</div><div class="menu-action"><span class="menu-price">60</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                 </div>
                 <div>
-                    <h3 class="text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-star text-lg opacity-80"></i> Specialty</h3>
+                    <h3 class="menu-group-title text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-star text-lg opacity-80"></i> Specialty</h3>
                     <div class="menu-row" onclick="addToOrder('Affogato Coffee', '125')"><div class="menu-name">Affogato Coffee</div><div class="menu-action"><span class="menu-price">125</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Spanish Latte', '145')"><div class="menu-name">Spanish Latte</div><div class="menu-action"><span class="menu-price">145</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Mocha', '145')"><div class="menu-name">Mocha</div><div class="menu-action"><span class="menu-price">145</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
@@ -415,7 +425,7 @@
         <div id="tab-cold" class="tab-pane">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
                 <div>
-                    <h3 class="text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-ice-cream text-lg opacity-80"></i> Iced Coffees & Frappes</h3>
+                    <h3 class="menu-group-title text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-ice-cream text-lg opacity-80"></i> Iced Coffees & Frappes</h3>
                     <div class="menu-row" onclick="addToOrder('Iced Americano', '90')"><div class="menu-name">Iced Americano</div><div class="menu-action"><span class="menu-price">90</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Iced Latte', '120')"><div class="menu-name">Iced Latte</div><div class="menu-action"><span class="menu-price">120</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Frappuccino', '130')"><div class="menu-name">Frappuccino</div><div class="menu-action"><span class="menu-price">130</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
@@ -435,7 +445,7 @@
                     <div class="menu-row" onclick="addToOrder('Strawberry Matcha Frappe', '250')"><div class="menu-name">Strawberry / Mango Matcha Frappe</div><div class="menu-action"><span class="menu-price">250</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                 </div>
                 <div>
-                    <h3 class="text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-glass-water text-lg opacity-80"></i> Refreshers & Healthy</h3>
+                    <h3 class="menu-group-title text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-glass-water text-lg opacity-80"></i> Refreshers & Healthy</h3>
                     <div class="menu-row" onclick="addToOrder('Fresh Juice', '70')"><div><div class="menu-name">Fresh Juices</div><div class="menu-desc">Orange, Mango, Strawberry, Guava (250ml)</div></div><div class="menu-action"><span class="menu-price">70</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Pink Lemonade', '140')"><div class="menu-name">Pink Lemonade</div><div class="menu-action"><span class="menu-price">140</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Iced Tea', '145')"><div><div class="menu-name">Iced Tea</div><div class="menu-desc">Blueberry, Peach, Passion</div></div><div class="menu-action"><span class="menu-price">145</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
@@ -450,7 +460,7 @@
         <div id="tab-bakery" class="tab-pane">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
                 <div>
-                    <h3 class="text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-croissant text-lg opacity-80"></i> Croissants</h3>
+                    <h3 class="menu-group-title text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-croissant text-lg opacity-80"></i> Croissants</h3>
                     <div class="menu-row" onclick="addToOrder('Plain croissant', '85')"><div class="menu-name">Plain croissant</div><div class="menu-action"><span class="menu-price">85</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Zaatar croissant', '95')"><div class="menu-name">Zaatar croissant</div><div class="menu-action"><span class="menu-price">95</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Cheese croissant', '100')"><div class="menu-name">Cheese croissant</div><div class="menu-action"><span class="menu-price">100</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
@@ -462,7 +472,7 @@
                     <div class="menu-row" onclick="addToOrder('Nutella croissant', '150')"><div class="menu-name">Nutella croissant</div><div class="menu-action"><span class="menu-price">150</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Strawberry coconut', '160')"><div class="menu-name">Strawberry coconut</div><div class="menu-action"><span class="menu-price">160</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     
-                    <h3 class="text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3 mt-12"><i class="fa-solid fa-cookie-bite text-lg opacity-80"></i> Cookies & Small Bites</h3>
+                    <h3 class="menu-group-title text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3 mt-12"><i class="fa-solid fa-cookie-bite text-lg opacity-80"></i> Cookies & Small Bites</h3>
                     <div class="menu-row" onclick="addToOrder('Macaron / Bonbon', '50')"><div><div class="menu-name">Macaron / Bonbon</div><div class="menu-desc">Various Flavors</div></div><div class="menu-action"><span class="menu-price">50</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Cookies', '85')"><div class="menu-name">Chocolate / Vanilla cookies</div><div class="menu-action"><span class="menu-price">85</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Chocolate Nutella cupcake', '85')"><div class="menu-name">Chocolate Nutella cupcake</div><div class="menu-action"><span class="menu-price">85</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
@@ -471,7 +481,7 @@
                     <div class="menu-row" onclick="addToOrder('Fruit marzipan', '95')"><div class="menu-name">Fruit marzipan</div><div class="menu-action"><span class="menu-price">95</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                 </div>
                 <div>
-                    <h3 class="text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-cake-candles text-lg opacity-80"></i> Cakes & Tarts</h3>
+                    <h3 class="menu-group-title text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-cake-candles text-lg opacity-80"></i> Cakes & Tarts</h3>
                     <div class="menu-row" onclick="addToOrder('Lemon meringue tartlet', '105')"><div class="menu-name">Lemon meringue tartlet</div><div class="menu-action"><span class="menu-price">105</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Red Velvet / Choc tartlet', '125')"><div class="menu-name">Red Velvet cake / Choc tartlet / Frosting carrot cake</div><div class="menu-action"><span class="menu-price">125</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Maritozzi pistachio', '140')"><div class="menu-name">Maritozzi pistachio / Fresh mango tart / Seasonal tart</div><div class="menu-action"><span class="menu-price">140</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
@@ -495,7 +505,7 @@
         <div id="tab-savory" class="tab-pane">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
                 <div>
-                    <h3 class="text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-sandwich text-lg opacity-80"></i> Sandwiches</h3>
+                    <h3 class="menu-group-title text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-sandwich text-lg opacity-80"></i> Sandwiches</h3>
                     <p class="text-[12px] text-white/50 italic mb-6 px-2 bg-white/5 py-3 rounded-lg border border-white/5 text-center">Prices vary by bread choice: Baguette, Ciabatta, Sourdough, Bagel, Croissant, Braided, Focaccia</p>
                     <div class="menu-row" onclick="addToOrder('Mix Cheddar Cheese Sandwich', '145+')">
                         <div class="menu-name">Mix Cheddar Cheese</div>
@@ -536,7 +546,7 @@
                 </div>
                 
                 <div>
-                    <h3 class="text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-leaf text-lg opacity-80"></i> Salads & Quiche</h3>
+                    <h3 class="menu-group-title text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3"><i class="fa-solid fa-leaf text-lg opacity-80"></i> Salads & Quiche</h3>
                     <div class="menu-row" onclick="addToOrder('Mix cheese quiche', '100')"><div class="menu-name">Mix cheese quiche</div><div class="menu-action"><span class="menu-price">100</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Spinach mushroom quiche', '100')"><div class="menu-name">Spinach mushroom quiche</div><div class="menu-action"><span class="menu-price">100</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Greek Salad', '135')"><div class="menu-name">Greek Salad</div><div class="menu-action"><span class="menu-price">135</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
@@ -544,7 +554,7 @@
                     <div class="menu-row" onclick="addToOrder('Caesar Salad', '180')"><div class="menu-name">Caesar Salad</div><div class="menu-action"><span class="menu-price">180</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Taco Salad', '200')"><div class="menu-name">Taco Salad</div><div class="menu-action"><span class="menu-price">200</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
 
-                    <h3 class="text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3 mt-12"><i class="fa-solid fa-bread-slice text-lg opacity-80"></i> Breads & Extras</h3>
+                    <h3 class="menu-group-title text-gold font-heading text-2xl mb-6 pb-3 border-b border-white/10 flex items-center gap-3 mt-12"><i class="fa-solid fa-bread-slice text-lg opacity-80"></i> Breads & Extras</h3>
                     <div class="menu-row" onclick="addToOrder('Braided Bread', '30')"><div class="menu-name">Braided Bread</div><div class="menu-action"><span class="menu-price">30</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Ciabatta / Gluten Free Bread', '35')"><div class="menu-name">Ciabatta / Gluten Free Bread</div><div class="menu-action"><span class="menu-price">35</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
                     <div class="menu-row" onclick="addToOrder('Focaccia Bread', '50')"><div class="menu-name">Focaccia Bread</div><div class="menu-action"><span class="menu-price">50</span> <div class="add-btn"><i class="fa-solid fa-plus"></i></div></div></div>
